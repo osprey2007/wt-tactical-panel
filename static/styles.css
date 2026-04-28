@@ -1,0 +1,217 @@
+:root {
+  --bg: #08131d;
+  --bg-soft: #102232;
+  --line: #29465e;
+  --text: #e8f4ff;
+  --muted: #9ec1db;
+  --ally: #58d66c;
+  --enemy: #ff5a5f;
+  --you: #55a9ff;
+  --glass: rgba(13, 30, 45, 0.82);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at 20% 10%, #1b374d 0%, var(--bg) 40%), linear-gradient(145deg, #07131f, #071926 50%, #0a1a29);
+}
+
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(to right, rgba(83, 138, 179, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(83, 138, 179, 0.09) 1px, transparent 1px);
+  background-size: 42px 42px;
+  pointer-events: none;
+}
+
+.layout {
+  position: relative;
+  z-index: 1;
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  gap: 20px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: start;
+  animation: reveal 380ms ease-out;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+h1 {
+  margin: 6px 0;
+  font-size: clamp(1.5rem, 2.8vw, 2.45rem);
+}
+
+.sub {
+  margin: 0;
+  color: #c9e2f6;
+}
+
+.status {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--glass);
+  font-weight: 600;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.card,
+.panel {
+  border: 1px solid var(--line);
+  background: var(--glass);
+  border-radius: 14px;
+  backdrop-filter: blur(7px);
+}
+
+.card {
+  padding: 14px;
+  animation: reveal 450ms ease-out;
+}
+
+.card h2 {
+  margin: 0 0 10px 0;
+  color: var(--muted);
+  font-size: 0.83rem;
+  font-weight: 600;
+}
+
+.card p {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.tactical-row {
+  display: grid;
+  grid-template-columns: 2.1fr 1fr;
+  gap: 16px;
+}
+
+.panel {
+  padding: 14px;
+}
+
+.panel-title-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.map-panel canvas {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(18, 41, 58, 0.85), rgba(9, 24, 36, 0.8));
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin: 10px 0 0;
+}
+
+.events-panel h3,
+.events-panel h4 {
+  margin-top: 0;
+}
+
+.losses {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.losses div {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 10px;
+}
+
+.losses strong {
+  font-size: 1.1rem;
+}
+
+.events {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  max-height: 420px;
+  overflow: auto;
+}
+
+.events li {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px;
+  font-size: 0.9rem;
+}
+
+.events li.enemy {
+  border-left: 4px solid var(--enemy);
+}
+
+.events li.ally {
+  border-left: 4px solid var(--ally);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1050px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+  }
+
+  .tactical-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .layout {
+    padding: 12px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+}

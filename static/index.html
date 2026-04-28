@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WT Tactical Panel</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="bg-grid"></div>
+    <main class="layout">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">War Thunder Local Telemetry</p>
+          <h1>Tableau tactique en direct</h1>
+          <p class="sub">
+            Perf vehicule, mini-carte et suivi des pertes allies/ennemis depuis les donnees de `localhost:8111`.
+          </p>
+        </div>
+        <div class="status" id="statusBadge">Connexion...</div>
+      </header>
+
+      <section class="cards" id="vehicleCards">
+        <article class="card"><h2>Vitesse</h2><p id="speed">-- km/h</p></article>
+        <article class="card"><h2>Gaz</h2><p id="throttle">-- %</p></article>
+        <article class="card"><h2>Regime</h2><p id="rpm">-- rpm</p></article>
+        <article class="card"><h2>Temp moteur</h2><p id="temp">-- C</p></article>
+        <article class="card"><h2>Altitude</h2><p id="altitude">-- m</p></article>
+        <article class="card"><h2>Accel</h2><p id="accel">-- g</p></article>
+      </section>
+
+      <section class="tactical-row">
+        <article class="panel map-panel">
+          <div class="panel-title-row">
+            <h3>Carte tactique</h3>
+            <span id="unitCount">0 unites</span>
+          </div>
+          <canvas id="mapCanvas" width="900" height="520"></canvas>
+          <p class="hint">Bleu: toi. Rouge: ennemi. Vert: allie. Croix: unite detruite.</p>
+        </article>
+
+        <article class="panel events-panel">
+          <h3>Pertes</h3>
+          <div class="losses">
+            <div><span>Allies detruits</span><strong id="allyLoss">0</strong></div>
+            <div><span>Ennemis detruits</span><strong id="enemyLoss">0</strong></div>
+          </div>
+          <h4>Evenements recents</h4>
+          <ul id="eventsList" class="events"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
