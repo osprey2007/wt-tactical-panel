@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import threading
 import time
 from collections import deque
@@ -14,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-WT_BASE_URL = "http://localhost:8111"
+WT_BASE_URL = os.getenv("WT_BASE_URL", "http://localhost:8111")
 POLL_INTERVAL = 0.6
 EVENT_MEMORY = 30
 BASE_DIR = Path(__file__).resolve().parent
