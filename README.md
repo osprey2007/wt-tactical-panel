@@ -91,6 +91,7 @@ Prends l'adresse IPv4 de ta carte Wi-Fi.
 - Fedora: `./start-fedora.sh`
 - Windows relay: `start-windows-relay.bat`
 - L'IP Windows est deja fixee sur `10.88.92.208` dans la config de demarrage
+- Si `8000` est deja pris, le dashboard saute automatiquement sur `8001`, `8002`, etc.
 
 ## Ce que fait chaque fichier
 

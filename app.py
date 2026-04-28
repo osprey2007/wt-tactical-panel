@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import socket
 import threading
 import time
 from collections import deque
@@ -18,6 +19,7 @@ from fastapi.staticfiles import StaticFiles
 WT_BASE_URL = os.getenv("WT_BASE_URL", "http://10.88.92.208:8112")
 WT_PANEL_HOST = os.getenv("WT_PANEL_HOST", "0.0.0.0")
 WT_PANEL_PORT = int(os.getenv("WT_PANEL_PORT", "8000"))
+WT_PANEL_PORT_MAX_SCAN = int(os.getenv("WT_PANEL_PORT_MAX_SCAN", "20"))
 POLL_INTERVAL = 0.6
 EVENT_MEMORY = 30
 BASE_DIR = Path(__file__).resolve().parent
@@ -205,5 +207,27 @@ def snapshot() -> JSONResponse:
     return JSONResponse(content=collector.read_snapshot())
 
 
+def _port_is_available(host: str, port: int) -> bool:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            sock.bind((host, port))
+        except OSError:
+            return False
+    return True
+
+
+def _pick_panel_port(host: str, preferred_port: int, max_scan: int) -> int:
+    for port in range(preferred_port, preferred_port + max_scan + 1):
+        if _port_is_available(host, port):
+            return port
+    raise RuntimeError(
+        f"No free port found between {preferred_port} and {preferred_port + max_scan} for {host}"
+    )
+
+
 if __name__ == "__main__":
-    uvicorn.run("app:app", host=WT_PANEL_HOST, port=WT_PANEL_PORT)
+    chosen_port = _pick_panel_port(WT_PANEL_HOST, WT_PANEL_PORT, WT_PANEL_PORT_MAX_SCAN)
+    if chosen_port != WT_PANEL_PORT:
+        print(f"Port {WT_PANEL_PORT} is busy, switching to {chosen_port}")
+    uvicorn.run("app:app", host=WT_PANEL_HOST, port=chosen_port)
