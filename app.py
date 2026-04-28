@@ -20,6 +20,8 @@ WT_BASE_URL = os.getenv("WT_BASE_URL", "http://10.88.92.208:8112")
 WT_PANEL_HOST = os.getenv("WT_PANEL_HOST", "0.0.0.0")
 WT_PANEL_PORT = int(os.getenv("WT_PANEL_PORT", "8000"))
 WT_PANEL_PORT_MAX_SCAN = int(os.getenv("WT_PANEL_PORT_MAX_SCAN", "20"))
+WT_REQUEST_TIMEOUT = float(os.getenv("WT_REQUEST_TIMEOUT", "2.5"))
+WT_REQUEST_RETRIES = int(os.getenv("WT_REQUEST_RETRIES", "3"))
 POLL_INTERVAL = 0.6
 EVENT_MEMORY = 30
 BASE_DIR = Path(__file__).resolve().parent
@@ -36,6 +38,7 @@ class DestroyEvent:
 class WTCollector:
     def __init__(self, base_url: str) -> None:
         self.base_url = base_url.rstrip("/")
+        self._session = requests.Session()
         self._lock = threading.Lock()
         self._snapshot: dict[str, Any] = {
             "online": False,
@@ -51,9 +54,21 @@ class WTCollector:
 
     def _fetch_json(self, path: str) -> Any:
         url = f"{self.base_url}{path}"
-        response = requests.get(url, timeout=0.5)
-        response.raise_for_status()
-        return response.json()
+        last_error: Exception | None = None
+
+        for _ in range(max(1, WT_REQUEST_RETRIES)):
+            try:
+                response = self._session.get(url, timeout=WT_REQUEST_TIMEOUT)
+                response.raise_for_status()
+                return response.json()
+            except Exception as exc:  # noqa: BLE001 - on veut retenter sur les erreurs de transport ou de temps
+                last_error = exc
+                time.sleep(0.25)
+
+        if last_error is not None:
+            raise last_error
+
+        raise RuntimeError(f"Unable to fetch {url}")
 
     def _extract_vehicle(self, state: dict[str, Any], indicators: dict[str, Any]) -> dict[str, Any]:
         return {

@@ -23,7 +23,7 @@ class RelayHandler(BaseHTTPRequestHandler):
         url = f"{UPSTREAM}{path}"
         try:
             req = urllib.request.Request(url, method="GET")
-            with urllib.request.urlopen(req, timeout=0.8) as resp:
+            with urllib.request.urlopen(req, timeout=2.0) as resp:
                 body = resp.read()
                 self.send_response(resp.status)
                 self.send_header("Content-Type", resp.headers.get("Content-Type", "application/json"))
