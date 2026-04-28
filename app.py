@@ -15,7 +15,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-WT_BASE_URL = os.getenv("WT_BASE_URL", "http://localhost:8111")
+WT_BASE_URL = os.getenv("WT_BASE_URL", "http://10.88.92.208:8112")
 WT_PANEL_HOST = os.getenv("WT_PANEL_HOST", "0.0.0.0")
 WT_PANEL_PORT = int(os.getenv("WT_PANEL_PORT", "8000"))
 POLL_INTERVAL = 0.6

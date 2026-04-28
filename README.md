@@ -35,8 +35,7 @@ pip install -r requirements.txt
 Une seule fois:
 
 1. Copie [config.example.env](config.example.env) en `config.env`
-2. Mets l'IP du PC Windows dans `WT_BASE_URL`
-3. Sur Fedora, rends le script exécutable: `chmod +x start-fedora.sh`
+2. Sur Fedora, rends le script exécutable: `chmod +x start-fedora.sh`
 
 Ensuite, a chaque session:
 
@@ -91,7 +90,7 @@ Prends l'adresse IPv4 de ta carte Wi-Fi.
 
 - Fedora: `./start-fedora.sh`
 - Windows relay: `start-windows-relay.bat`
-- Si tu changes l'IP du PC Windows, modifie juste `config.env`
+- L'IP Windows est deja fixee sur `10.88.92.208` dans la config de demarrage
 
 ## Ce que fait chaque fichier
 
