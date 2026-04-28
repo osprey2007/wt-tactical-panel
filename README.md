@@ -16,12 +16,10 @@ Interface tactique pour War Thunder basee sur les donnees exposees via `http://l
 
 ## Architecture conseillee (ton cas)
 
-- PC Windows: fait tourner War Thunder
-- PC Fedora: fait tourner cette application web
+- PC Windows: fait tourner War Thunder et le relay local
+- PC Fedora: fait tourner le tableau de bord
 
-Important: `localhost:8111` est local au PC Windows. Le PC Fedora ne peut pas y acceder directement.
-
-Solution: lancer un mini relay HTTP sur Windows, puis faire pointer Fedora dessus.
+Important: `localhost:8111` est local au PC Windows. Le PC Fedora ne peut pas y acceder directement, donc il passe par le relay Windows.
 
 ## Installation
 
@@ -32,13 +30,20 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## Lancement
+## Mise en place rapide
 
-```powershell
-uvicorn app:app --host 0.0.0.0 --port 8000
-```
+Une seule fois:
 
-Tu peux aussi definir la source WT a lire (par defaut: `http://localhost:8111`):
+1. Copie [config.example.env](config.example.env) en `config.env`
+2. Mets l'IP du PC Windows dans `WT_BASE_URL`
+3. Sur Fedora, rends le script exécutable: `chmod +x start-fedora.sh`
+
+Ensuite, a chaque session:
+
+1. Sur Windows, lance [start-windows-relay.bat](start-windows-relay.bat)
+2. Sur Fedora, lance [start-fedora.sh](start-fedora.sh)
+
+## Lancement manuel
 
 ```bash
 WT_BASE_URL=http://IP_WINDOWS:8112 python app.py
@@ -81,6 +86,18 @@ ipconfig
 ```
 
 Prends l'adresse IPv4 de ta carte Wi-Fi.
+
+## Commandes courtes
+
+- Fedora: `./start-fedora.sh`
+- Windows relay: `start-windows-relay.bat`
+- Si tu changes l'IP du PC Windows, modifie juste `config.env`
+
+## Ce que fait chaque fichier
+
+- [start-windows-relay.bat](start-windows-relay.bat): expose l'API WT du PC Windows sur le port `8112`
+- [start-fedora.sh](start-fedora.sh): lance le dashboard Fedora avec `config.env`
+- [config.env](config.env): garde l'adresse du PC Windows sans la retaper
 
 ## Note importante
 

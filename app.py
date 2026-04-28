@@ -16,6 +16,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 WT_BASE_URL = os.getenv("WT_BASE_URL", "http://localhost:8111")
+WT_PANEL_HOST = os.getenv("WT_PANEL_HOST", "0.0.0.0")
+WT_PANEL_PORT = int(os.getenv("WT_PANEL_PORT", "8000"))
 POLL_INTERVAL = 0.6
 EVENT_MEMORY = 30
 BASE_DIR = Path(__file__).resolve().parent
@@ -204,4 +206,4 @@ def snapshot() -> JSONResponse:
 
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0", port=8000)
+    uvicorn.run("app:app", host=WT_PANEL_HOST, port=WT_PANEL_PORT)
