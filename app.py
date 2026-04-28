@@ -3,10 +3,13 @@ from __future__ import annotations
 import threading
 import time
 from collections import deque
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import requests
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -14,6 +17,8 @@ from fastapi.staticfiles import StaticFiles
 WT_BASE_URL = "http://localhost:8111"
 POLL_INTERVAL = 0.6
 EVENT_MEMORY = 30
+BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
 
 
 @dataclass
@@ -171,12 +176,8 @@ class WTCollector:
 
 
 collector = WTCollector(WT_BASE_URL)
-app = FastAPI(title="WT Tactical Panel")
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-@app.on_event("startup")
-def startup() -> None:
+@asynccontextmanager
+async def lifespan(_: FastAPI):
     def loop() -> None:
         while True:
             collector.poll_once()
@@ -184,13 +185,22 @@ def startup() -> None:
 
     thread = threading.Thread(target=loop, daemon=True)
     thread.start()
+    yield
+
+
+app = FastAPI(title="WT Tactical Panel", lifespan=lifespan)
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
 @app.get("/")
 def index() -> FileResponse:
-    return FileResponse("static/index.html")
+    return FileResponse(str(STATIC_DIR / "index.html"))
 
 
 @app.get("/api/snapshot")
 def snapshot() -> JSONResponse:
     return JSONResponse(content=collector.read_snapshot())
+
+
+if __name__ == "__main__":
+    uvicorn.run("app:app", host="0.0.0.0", port=8000)
